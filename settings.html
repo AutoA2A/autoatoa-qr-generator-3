@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>设置 - 参数与偏好</title>
+<style>
+:root{--primary:#2f6fed;--bg:#fff;--text:#222;--muted:#555;}
+body{margin:0;font-family:'Helvetica Neue',Arial,sans-serif;background:#f5f5f5;color:var(--text);}
+header{background:var(--primary);color:#fff;padding:16px;text-align:center;}
+header h1{margin:0;font-size:1.5rem;}
+header p{margin:4px 0 0;font-size:.9rem;opacity:.9;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;background:#fff;padding:8px 16px;box-shadow:0 2px 4px rgba(0,0,0,.1);}
+nav a{padding:8px 12px;border-radius:4px;text-decoration:none;color:var(--primary);font-weight:500;background:#eef2ff;}
+nav a:hover,nav a.active{background:#dce6ff;}
+main{max-width:960px;margin:24px auto;padding:0 16px;}
+.card{background:#fff;border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+button{background:var(--primary);color:#fff;border:none;border-radius:4px;padding:8px 16px;cursor:pointer;}
+button:hover{opacity:.9;}
+@media(max-width:480px){nav{flex-direction:column;align-items:stretch;}
+nav a{width:100%;text-align:center;}}
+</style>
+<meta name="description" content="设置默认尺寸、容错级别、是否自动保存历史、清除历史记录等选项。"><meta name="keywords" content="QR码,在线生成,自定义,历史记录,下载"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="website"><meta property="og:title" content="设置 - 参数与偏好"><meta property="og:description" content="设置默认尺寸、容错级别、是否自动保存历史、清除历史记录等选项。"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="设置 - 参数与偏好"><meta name="twitter:description" content="设置默认尺寸、容错级别、是否自动保存历史、清除历史记录等选项。"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"设置 - 参数与偏好","description":"设置默认尺寸、容错级别、是否自动保存历史、清除历史记录等选项。","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}</script><style data-a2a="basecss">*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0}img,canvas,svg,video,table{max-width:100%;height:auto}pre,code{white-space:pre-wrap;word-break:break-word}[data-a2a="header"]{width:100%}@media(max-width:640px){body{font-size:15px}}</style></head>
+<body>
+<header>
+<h1>码上生成</h1>
+<p>交互工具 / 小游戏</p>
+</header>
+<nav>
+<a href="index.html">首页 - 在线QR码生成</a>
+<a href="customize.html">自定义QR码 - 颜色与Logo</a>
+<a href="history.html">历史记录 - 我的QR码</a>
+<a href="share.html">分享QR码 - 生成链接与社交</a>
+<a href="settings.html">设置 - 参数与偏好</a>
+</nav>
+<main>
+
+<article class="card"><h3>设置 - 参数与偏好</h3>
+<form id="settingsForm">
+  <div style="margin-bottom:12px;">
+    <label for="defaultSize">默认尺寸（像素）：</label>
+    <select id="defaultSize" style="padding:4px;">
+      <option value="100">100</option>
+      <option value="150">150</option>
+      <option value="200" selected>200</option>
+      <option value="250">250</option>
+      <option value="300">300</option>
+    </select>
+  </div>
+  <div style="margin-bottom:12px;">
+    <label for="errorLevel">容错级别：</label>
+    <select id="errorLevel" style="padding:4px;">
+      <option value="L">L (7%)</option>
+      <option value="M" selected>M (15%)</option>
+      <option value="Q">Q (25%)</option>
+      <option value="H">H (30%)</option>
+    </select>
+  </div>
+  <div style="margin-bottom:12px;">
+    <label>
+      <input type="checkbox" id="autoSaveHistory" style="margin-right:4px;">
+      自动保存历史记录
+    </label>
+  </div>
+</form>
+<button id="clearHistoryBtn" class="btn" style="margin-top:8px;">清除历史记录</button>
+</article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('settingsForm');
+  const sizeSelect = document.getElementById('defaultSize');
+  const levelSelect = document.getElementById('errorLevel');
+  const autoSaveCheckbox = document.getElementById('autoSaveHistory');
+  const clearBtn = document.getElementById('clearHistoryBtn');
+
+  // 读取已保存的设置（若无则使用默认值）
+  const saved = JSON.parse(localStorage.getItem('qrSettings') || '{}');
+  if (saved.defaultSize) sizeSelect.value = saved.defaultSize;
+  if (saved.errorLevel) levelSelect.value = saved.errorLevel;
+  if (saved.autoSaveHistory !== undefined) autoSaveCheckbox.checked = saved.autoSaveHistory;
+
+  // 保存设置
+  function saveSettings() {
+    const settings = {
+      defaultSize: sizeSelect.value,
+      errorLevel: levelSelect.value,
+      autoSaveHistory: autoSaveCheckbox.checked
+    };
+    localStorage.setItem('qrSettings', JSON.stringify(settings));
+  }
+
+  sizeSelect.addEventListener('change', saveSettings);
+  levelSelect.addEventListener('change', saveSettings);
+  autoSaveCheckbox.addEventListener('change', saveSettings);
+
+  // 清除历史记录
+  clearBtn.addEventListener('click', function () {
+    if (confirm('确定要清除所有历史记录吗？此操作不可恢复。')) {
+      localStorage.removeItem('qrHistory');
+      alert('历史记录已清除。');
+    }
+  });
+});
+</script>
+
+</main>
+<footer data-a2a="footer" style="margin-top:48px;padding:28px 16px;border-top:1px solid rgba(127,127,127,.16);text-align:center;font-family:system-ui,-apple-system,'PingFang SC',sans-serif;line-height:1.9;color:#8a8f99;background:transparent"><a href="https://www.autoa2a.org" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:10px"><img src="https://agent.oagi.com.cn/uploads/202606/29ea3ed5413830b3.png" alt="AutoA2A" style="height:36px;vertical-align:middle;border:0"></a><div style="font-size:13.5px;color:#6b7280;max-width:760px;margin:0 auto 6px">✅️ <b>AutoA2A</b> · 智能体互连 Agent to Agent 平台——让智能体无缝发现、协商、协作与安全交换数据，开启 AI 即服务新时代。</div><div style="font-size:13px">本网站由 <a href="https://www.autoa2a.org" target="_blank" rel="noopener" style="color:#f2603c;text-decoration:none;font-weight:600">www.autoa2a.org</a> 多个 AI 协作生成</div><div style="font-size:12px;color:#aab;margin-top:6px">Copyright © 2025 - 2026 AutoA2A. All Rights Reserved. A2A版权所有</div></footer></body>
+</html>
