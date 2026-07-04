@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>历史记录 - 我的QR码</title>
+<style>
+:root{--primary:#2f6fed;--bg:#fff;--text:#222;--muted:#555;}
+body{margin:0;font-family:'Helvetica Neue',Arial,sans-serif;background:#f5f5f5;color:var(--text);}
+header{background:var(--primary);color:#fff;padding:16px;text-align:center;}
+header h1{margin:0;font-size:1.5rem;}
+header p{margin:4px 0 0;font-size:.9rem;opacity:.9;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;background:#fff;padding:8px 16px;box-shadow:0 2px 4px rgba(0,0,0,.1);}
+nav a{padding:8px 12px;border-radius:4px;text-decoration:none;color:var(--primary);font-weight:500;background:#eef2ff;}
+nav a:hover,nav a.active{background:#dce6ff;}
+main{max-width:960px;margin:24px auto;padding:0 16px;}
+.card{background:#fff;border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+button{background:var(--primary);color:#fff;border:none;border-radius:4px;padding:8px 16px;cursor:pointer;}
+button:hover{opacity:.9;}
+@media(max-width:480px){nav{flex-direction:column;align-items:stretch;}
+nav a{width:100%;text-align:center;}}
+</style>
+<meta name="description" content="展示本地存储的QR码记录，支持点击重新加载至首页编辑或直接下载。"><meta name="keywords" content="QR码,在线生成,自定义,历史记录,下载"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="website"><meta property="og:title" content="历史记录 - 我的QR码"><meta property="og:description" content="展示本地存储的QR码记录，支持点击重新加载至首页编辑或直接下载。"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="历史记录 - 我的QR码"><meta name="twitter:description" content="展示本地存储的QR码记录，支持点击重新加载至首页编辑或直接下载。"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"历史记录 - 我的QR码","description":"展示本地存储的QR码记录，支持点击重新加载至首页编辑或直接下载。","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}</script><style data-a2a="basecss">*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0}img,canvas,svg,video,table{max-width:100%;height:auto}pre,code{white-space:pre-wrap;word-break:break-word}[data-a2a="header"]{width:100%}@media(max-width:640px){body{font-size:15px}}</style></head>
+<body>
+<header>
+<h1>码上生成</h1>
+<p>交互工具 / 小游戏</p>
+</header>
+<nav>
+<a href="index.html">首页 - 在线QR码生成</a>
+<a href="customize.html">自定义QR码 - 颜色与Logo</a>
+<a href="history.html">历史记录 - 我的QR码</a>
+<a href="share.html">分享QR码 - 生成链接与社交</a>
+<a href="settings.html">设置 - 参数与偏好</a>
+</nav>
+<main>
+
+<section>
+  <h2>历史记录</h2>
+  <div id="history-list"></div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const list = document.getElementById('history-list');
+  const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+  if (history.length === 0) {
+    list.innerHTML = '<p class="empty">暂无记录</p><a href="index.html" class="btn">去生成</a>';
+    return;
+  }
+  history.forEach(function (item) {
+    const card = document.createElement('article');
+    card.className = 'card';
+
+    const img = document.createElement('img');
+    img.src = item.dataURL || '';
+    img.alt = 'QR码';
+    img.style.maxWidth = '100%';
+    img.style.height = 'auto';
+    card.appendChild(img);
+
+    const info = document.createElement('div');
+    info.style.marginTop = '8px';
+
+    const txt = document.createElement('p');
+    txt.style.margin = '0 0 4px';
+    const displayText = (item.text || '').length > 30 ? (item.text || '').substring(0, 30) + '...' : (item.text || '');
+    txt.textContent = displayText;
+    info.appendChild(txt);
+
+    const time = document.createElement('p');
+    time.style.margin = '0';
+    time.style.fontSize = '0.9rem';
+    time.style.color = 'var(--muted)';
+    time.textContent = new Date(item.timestamp || 0).toLocaleString();
+    info.appendChild(time);
+
+    card.appendChild(info);
+
+    const btns = document.createElement('div');
+    btns.style.marginTop = '8px';
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = '重新编辑';
+    editBtn.onclick = function () {
+      sessionStorage.setItem('qrEditData', JSON.stringify(item));
+      location.href = 'index.html';
+    };
+
+    const dlBtn = document.createElement('button');
+    dlBtn.textContent = '下载';
+    dlBtn.onclick = function () {
+      const a = document.createElement('a');
+      a.href = item.dataURL;
+      a.download = 'qr-code.png';
+      a.click();
+    };
+
+    btns.appendChild(editBtn);
+    btns.appendChild(document.createTextNode(' '));
+    btns.appendChild(dlBtn);
+    card.appendChild(btns);
+
+    list.appendChild(card);
+  });
+});
+</script>
+
+</main>
+<footer data-a2a="footer" style="margin-top:48px;padding:28px 16px;border-top:1px solid rgba(127,127,127,.16);text-align:center;font-family:system-ui,-apple-system,'PingFang SC',sans-serif;line-height:1.9;color:#8a8f99;background:transparent"><a href="https://www.autoa2a.org" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:10px"><img src="https://agent.oagi.com.cn/uploads/202606/29ea3ed5413830b3.png" alt="AutoA2A" style="height:36px;vertical-align:middle;border:0"></a><div style="font-size:13.5px;color:#6b7280;max-width:760px;margin:0 auto 6px">✅️ <b>AutoA2A</b> · 智能体互连 Agent to Agent 平台——让智能体无缝发现、协商、协作与安全交换数据，开启 AI 即服务新时代。</div><div style="font-size:13px">本网站由 <a href="https://www.autoa2a.org" target="_blank" rel="noopener" style="color:#f2603c;text-decoration:none;font-weight:600">www.autoa2a.org</a> 多个 AI 协作生成</div><div style="font-size:12px;color:#aab;margin-top:6px">Copyright © 2025 - 2026 AutoA2A. All Rights Reserved. A2A版权所有</div></footer></body>
+</html>
