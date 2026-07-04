@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分享QR码 - 生成链接与社交</title>
+<style>
+:root{--primary:#2f6fed;--bg:#fff;--text:#222;--muted:#555;}
+body{margin:0;font-family:'Helvetica Neue',Arial,sans-serif;background:#f5f5f5;color:var(--text);}
+header{background:var(--primary);color:#fff;padding:16px;text-align:center;}
+header h1{margin:0;font-size:1.5rem;}
+header p{margin:4px 0 0;font-size:.9rem;opacity:.9;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;background:#fff;padding:8px 16px;box-shadow:0 2px 4px rgba(0,0,0,.1);}
+nav a{padding:8px 12px;border-radius:4px;text-decoration:none;color:var(--primary);font-weight:500;background:#eef2ff;}
+nav a:hover,nav a.active{background:#dce6ff;}
+main{max-width:960px;margin:24px auto;padding:0 16px;}
+.card{background:#fff;border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+button{background:var(--primary);color:#fff;border:none;border-radius:4px;padding:8px 16px;cursor:pointer;}
+button:hover{opacity:.9;}
+@media(max-width:480px){nav{flex-direction:column;align-items:stretch;}
+nav a{width:100%;text-align:center;}}
+</style>
+<meta name="description" content="提供生成QR码的短链接、嵌入HTML代码以及一键分享到微信、微博、QQ等平台。"><meta name="keywords" content="QR码,在线生成,自定义,历史记录,下载"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="website"><meta property="og:title" content="分享QR码 - 生成链接与社交"><meta property="og:description" content="提供生成QR码的短链接、嵌入HTML代码以及一键分享到微信、微博、QQ等平台。"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="分享QR码 - 生成链接与社交"><meta name="twitter:description" content="提供生成QR码的短链接、嵌入HTML代码以及一键分享到微信、微博、QQ等平台。"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"分享QR码 - 生成链接与社交","description":"提供生成QR码的短链接、嵌入HTML代码以及一键分享到微信、微博、QQ等平台。","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}</script><style data-a2a="basecss">*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0}img,canvas,svg,video,table{max-width:100%;height:auto}pre,code{white-space:pre-wrap;word-break:break-word}[data-a2a="header"]{width:100%}@media(max-width:640px){body{font-size:15px}}</style></head>
+<body>
+<header>
+<h1>码上生成</h1>
+<p>交互工具 / 小游戏</p>
+</header>
+<nav>
+<a href="index.html">首页 - 在线QR码生成</a>
+<a href="customize.html">自定义QR码 - 颜色与Logo</a>
+<a href="history.html">历史记录 - 我的QR码</a>
+<a href="share.html">分享QR码 - 生成链接与社交</a>
+<a href="settings.html">设置 - 参数与偏好</a>
+</nav>
+<main>
+
+<section>
+  <h2>分享QR码</h2>
+  <div id="qr-preview" class="card" style="text-align:center;">
+    <img id="qr-img" src="" alt="QR code" style="max-width:200px;margin-bottom:8px;">
+    <p id="qr-text" style="color:var(--muted);font-size:.9rem;"></p>
+  </div>
+</section>
+
+<section>
+  <h3>短链接</h3>
+  <input id="short-link" readonly style="width:100%;padding:8px;box-sizing:border-box;font-family:inherit;">
+  <button id="copy-short-link">复制链接</button>
+</section>
+
+<section>
+  <h3>嵌入HTML代码</h3>
+  <textarea id="embed-code" readonly style="width:100%;height:60px;padding:8px;box-sizing:border-box;font-family:inherit;"></button>
+  <button id="copy-embed">复制代码</button>
+</section>
+
+<section>
+  <h3>一键分享</h3>
+  <button id="share-btn">分享到微信/微博/QQ等</button>
+</section>
+
+<script>
+(function(){
+  function dataURLToBlob(dataurl){
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--) u8arr[n]=bstr.charCodeAt(n);
+    return new Blob([u8arr],{type:mime});
+  }
+  function copyToClipboard(text){
+    navigator.clipboard.writeText(text).then(()=>{
+      alert('已复制到剪贴板');
+    }).catch(()=>{
+      var ta=document.createElement('textarea');
+      ta.value=text;document.body.appendChild(ta);
+      ta.select();document.execCommand('copy');
+      document.body.removeChild(ta);
+      alert('已复制到剪贴板');
+    });
+  }
+  var stored = localStorage.getItem('lastQR');
+  var preview=document.getElementById('qr-img'), textEl=document.getElementById('qr-text');
+  var shortInp=document.getElementById('short-link'), embedTa=document.getElementById('embed-code');
+  var copyShort=document.getElementById('copy-short-link'), copyEmbed=document.getElementById('copy-embed');
+  var shareBtn=document.getElementById('share-btn');
+  if(!stored){
+    preview.src='';
+    textEl.textContent='未找到QR码，请先生成。';
+    shortInp.value='';
+    embedTa.value='';
+    return;
+  }
+  var obj=JSON.parse(stored);
+  preview.src=obj.dataUrl;
+  textEl.textContent=obj.text;
+  var shortUrl=location.origin+location.pathname.replace(/[^/]+$/, 'index.html')+'?text='+encodeURIComponent(obj.text);
+  shortInp.value=shortUrl;
+  embedTa.value='<img src="'+obj.dataUrl+'" alt="QR code" width="150" height="150">';
+  copyShort.onclick=function(){copyToClipboard(shortUrl);};
+  copyEmbed.onclick=function(){copyToClipboard(embedTa.value);};
+  shareBtn.onclick=function(){
+    if(navigator.share){
+      var blob=dataURLToBlob(obj.dataUrl);
+      var file=new File([blob],'qrcode.png',{type:blob.type});
+      navigator.share({
+        title:'我的QR码',
+        text:obj.text,
+        url:shortUrl,
+        files:[file]
+      }).catch(()=>alert('分享失败或被取消'));
+    }else{
+      alert('当前浏览器不支持Web Share API，请长按图片保存后手动分享。');
+    }
+  };
+})();
+</script>
+
+</main>
+<footer data-a2a="footer" style="margin-top:48px;padding:28px 16px;border-top:1px solid rgba(127,127,127,.16);text-align:center;font-family:system-ui,-apple-system,'PingFang SC',sans-serif;line-height:1.9;color:#8a8f99;background:transparent"><a href="https://www.autoa2a.org" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:10px"><img src="https://agent.oagi.com.cn/uploads/202606/29ea3ed5413830b3.png" alt="AutoA2A" style="height:36px;vertical-align:middle;border:0"></a><div style="font-size:13.5px;color:#6b7280;max-width:760px;margin:0 auto 6px">✅️ <b>AutoA2A</b> · 智能体互连 Agent to Agent 平台——让智能体无缝发现、协商、协作与安全交换数据，开启 AI 即服务新时代。</div><div style="font-size:13px">本网站由 <a href="https://www.autoa2a.org" target="_blank" rel="noopener" style="color:#f2603c;text-decoration:none;font-weight:600">www.autoa2a.org</a> 多个 AI 协作生成</div><div style="font-size:12px;color:#aab;margin-top:6px">Copyright © 2025 - 2026 AutoA2A. All Rights Reserved. A2A版权所有</div></footer></body>
+</html>
