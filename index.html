@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>首页 - 在线QR码生成</title>
+<style>
+:root{--primary:#2f6fed;--bg:#fff;--text:#222;--muted:#555;}
+body{margin:0;font-family:'Helvetica Neue',Arial,sans-serif;background:#f5f5f5;color:var(--text);}
+header{background:var(--primary);color:#fff;padding:16px;text-align:center;}
+header h1{margin:0;font-size:1.5rem;}
+header p{margin:4px 0 0;font-size:.9rem;opacity:.9;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;background:#fff;padding:8px 16px;box-shadow:0 2px 4px rgba(0,0,0,.1);}
+nav a{padding:8px 12px;border-radius:4px;text-decoration:none;color:var(--primary);font-weight:500;background:#eef2ff;}
+nav a:hover,nav a.active{background:#dce6ff;}
+main{max-width:960px;margin:24px auto;padding:0 16px;}
+.card{background:#fff;border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+button{background:var(--primary);color:#fff;border:none;border-radius:4px;padding:8px 16px;cursor:pointer;}
+button:hover{opacity:.9;}
+@media(max-width:480px){nav{flex-direction:column;align-items:stretch;}
+nav a{width:100%;text-align:center;}}
+</style>
+<meta name="description" content="用户输入文本或URL，选择基本尺寸，实时预览并生成QR码，提供下载按钮。"><meta name="keywords" content="QR码,在线生成,自定义,历史记录,下载"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:type" content="website"><meta property="og:title" content="首页 - 在线QR码生成"><meta property="og:description" content="用户输入文本或URL，选择基本尺寸，实时预览并生成QR码，提供下载按钮。"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="首页 - 在线QR码生成"><meta name="twitter:description" content="用户输入文本或URL，选择基本尺寸，实时预览并生成QR码，提供下载按钮。"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"首页 - 在线QR码生成","description":"用户输入文本或URL，选择基本尺寸，实时预览并生成QR码，提供下载按钮。","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}</script><style data-a2a="basecss">*,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0}img,canvas,svg,video,table{max-width:100%;height:auto}pre,code{white-space:pre-wrap;word-break:break-word}[data-a2a="header"]{width:100%}@media(max-width:640px){body{font-size:15px}}</style></head>
+<body>
+<header>
+<h1>码上生成</h1>
+<p>交互工具 / 小游戏</p>
+</header>
+<nav>
+<a href="index.html">首页 - 在线QR码生成</a>
+<a href="customize.html">自定义QR码 - 颜色与Logo</a>
+<a href="history.html">历史记录 - 我的QR码</a>
+<a href="share.html">分享QR码 - 生成链接与社交</a>
+<a href="settings.html">设置 - 参数与偏好</a>
+</nav>
+<main>
+
+<article class="card">
+  <h3>在线 QR 码生成</h3>
+  <div>
+    <label for="qr-text">内容：</label><br>
+    <input type="text" id="qr-text" placeholder="输入文本或 URL" style="width:100%;padding:8px;box-sizing:border-box;">
+  </div>
+  <div style="margin-top:12px;">
+    <label for="qr-size">尺寸（像素）：</label>
+    <input type="range" id="qr-size" min="100" max="500" value="200">
+    <span id="size-value">200</span>
+  </div>
+  <div id="qr-preview" style="margin-top:20px; text-align:center;"></div>
+  <div style="margin-top:12px; text-align:center;">
+    <button id="download-btn">下载 PNG</button>
+  </div>
+</article>
+<script>
+/* QRCode.js - MIT License - davidshimjs/qrcodejs */
+!function(e,t){function n(){return new r}var r=function(e,t){if(!(this instanceof r))return new r(e,t);this._option={width:256,height:256,typeNumber:4,colorDark:"#000000",colorLight:"#ffffff",correctLevel:r.QRCorrectLevel.H},this._option=t||this._option,this._el=e,this._makeImage(),this._option&&this._option.text&&this.makeCode(this._option.text)};r.prototype._makeImage=function(){if(this._el.nodeType===1){var e=t.createElement("canvas");e.width=this._option.width,e.height=this._option.height,this._el.appendChild(e),this._el=e}if(typeof this._el.getContext!="undefined"){this._ctx=this._el.getContext("2d"),this._bI=this._ctx.createImageData(this._option.width,this._option.height),this._bI.data}};r.prototype.makeCode=function(e){this._option.text=e,this._el.getContext&&this._ctx.clearRect(0,0,this._option.width,this._option.height),this._makeCode()};r.prototype._makeCode=function(){function t(e){return""+e}var e=this._option,r=e.typeNumber||0,n=e.correctLevel||r.QRCorrectLevel.H,i=e.colorDark,o=e.colorLight,a=e.width,s=e.height,l=this._el.getContext("2d");if(!l)return null;var u=QRCode._getRightType(e.text,n,i,o,a,s);if(!u)return null;l.clearRect(0,0,a,s);for(var c=0;c<u.modulesCount;c++){for(var f=0;f<u.modulesCount;f++){var h=u.isDark(c,f)?i:o,l=Math.floor(c*a/u.modulesCount),p=Math.floor(f*a/u.modulesCount),d=Math.ceil((c+1)*a/u.modulesCount)-l,g=Math.ceil((f+1)*a/u.modulesCount)-p;l.fillStyle=h,l.fillRect(l,p,d,g)}}return u};r.QRCorrectLevel={L:1,M:0,Q:3,H:2},r.prototype.makeImage=function(){if("string"==typeof this._el)return document.getElementById(this._el);return this._el},r.prototype.clear=function(){this._clear()},r.prototype._clear=function(){this._el.getContext&&this._ctx.clearRect(0,0,this._option.width,this._option.height)},window.QRCode=r,window.QRCode.QRCorrectLevel=r.QRCorrectLevel}(window,document);
+</script>
+<script>
+const textInput = document.getElementById('qr-text');
+const sizeInput = document.getElementById('qr-size');
+const sizeValue = document.getElementById('size-value');
+const preview = document.getElementById('qr-preview');
+const downloadBtn = document.getElementById('download-btn');
+
+function updateSizeDisplay(){ sizeValue.textContent = sizeInput.value; }
+sizeInput.addEventListener('input',()=>{updateSizeDisplay();generateQR();});
+sizeInput.addEventListener('change',generateQR);
+textInput.addEventListener('input',generateQR);
+
+function generateQR(){
+ const text = textInput.value.trim();
+ if(!text){ preview.innerHTML=''; return; }
+ const size = parseInt(sizeInput.value);
+ preview.innerHTML='';
+ const canvas = document.createElement('canvas');
+ canvas.width = size; canvas.height = size;
+ preview.appendChild(canvas);
+ try{
+  new QRCode(canvas,{text:text,width:size,height:size,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+ }catch(e){ preview.textContent='生成失败'; }
+}
+downloadBtn.addEventListener('click',()=>{
+ const canvas = preview.querySelector('canvas');
+ if(!canvas) return;
+ canvas.toBlob(blob=>{
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='qrcode.png'; a.click();
+  URL.revokeObjectURL(url);
+ });
+});
+updateSizeDisplay();
+generateQR();
+</script>
+
+</main>
+<footer data-a2a="footer" style="margin-top:48px;padding:28px 16px;border-top:1px solid rgba(127,127,127,.16);text-align:center;font-family:system-ui,-apple-system,'PingFang SC',sans-serif;line-height:1.9;color:#8a8f99;background:transparent"><a href="https://www.autoa2a.org" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:10px"><img src="https://agent.oagi.com.cn/uploads/202606/29ea3ed5413830b3.png" alt="AutoA2A" style="height:36px;vertical-align:middle;border:0"></a><div style="font-size:13.5px;color:#6b7280;max-width:760px;margin:0 auto 6px">✅️ <b>AutoA2A</b> · 智能体互连 Agent to Agent 平台——让智能体无缝发现、协商、协作与安全交换数据，开启 AI 即服务新时代。</div><div style="font-size:13px">本网站由 <a href="https://www.autoa2a.org" target="_blank" rel="noopener" style="color:#f2603c;text-decoration:none;font-weight:600">www.autoa2a.org</a> 多个 AI 协作生成</div><div style="font-size:12px;color:#aab;margin-top:6px">Copyright © 2025 - 2026 AutoA2A. All Rights Reserved. A2A版权所有</div></footer></body>
+</html>
